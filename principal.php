@@ -23,6 +23,10 @@
                 header("Location: ./login.php");
             } else if (isset($_POST["login"])) {
                 header("Location: ./login.php");
+            } else if (isset($_POST["verCesta"])) {
+                header("Location: ./cesta.php");
+            } else if (isset($_POST["verPedidos"])) {
+                header("Location: ./pedidos.php");
             } else if (isset($_POST["anadir"])) {
                 $idProducto = $_POST["anadir"];
 
@@ -55,8 +59,6 @@
 
                 $sql = "UPDATE cestas SET precioTotal = $precioFinal WHERE idCesta = '$idCesta'";
                 $conexion -> query($sql);
-            } else if (isset($_POST["verCesta"])) {
-                header("Location: ./cesta.php");
             }
         }
         
@@ -67,6 +69,14 @@
                     <a href="./cesta.php">
                         <input type="hidden" name="verCesta">
                         <input type="submit" class="btn btn-primary" value="Ver mi cesta">
+                    </a>
+                </form>
+            </div>
+            <div class="mt-3">
+                <form method="post">
+                    <a href="./pedidos.php">
+                        <input type="hidden" name="verPedidos">
+                        <input type="submit" class="btn btn-primary" value="Ver pedidos">
                     </a>
                 </form>
             </div>

@@ -48,10 +48,53 @@
             $conexion -> query($sql);
             
         } else if (isset($_POST["comprar"])) {
-            
+            // Crear un pedido con la info de la cesta
+
+            $hoy = getdate();
+            $fecha = $hoy['year'] . "-" . $hoy['mon'] . "-" . $hoy['wday'];
+
+            $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+            $resultadoProductos = $conexion -> query($sql);
+            $res = $resultadoProductos -> fetch_assoc();
+
+            $idCesta = $res["idCesta"];
+
+            $sql = "SELECT precioTotal FROM cestas WHERE idCesta = '$idCesta'";
+            $precioTotal = $conexion -> query($sql) -> fetch_assoc();
+            $precioTotal = $precioTotal["precioTotal"];
+
+            $sql = "INSERT INTO pedidos (fecha, precioTotal, usuario) VALUES ('$fecha', '$precioTotal', '$usuario')";
+            $conexion -> query($sql);
+
+            $sql = "SELECT idPedido FROM pedidos WHERE usuario = '$usuario' ORDER BY idPedido DESC";
+            $res = $conexion -> query($sql) -> fetch_assoc();
+            $idPedido = $res["idPedido"];
+
+            $sql = "SELECT * FROM productosCestas WHERE idCesta = '$idCesta'";
+            $res = $conexion -> query($sql);
+
+            $lineaPedido = 1;
+            while ($fila = $res -> fetch_assoc()) {
+                $idProducto = $fila["idProducto"];
+                $cantidad = $fila["cantidad"];
+                $sql = "SELECT precio FROM productos WHERE idProducto = '$idProducto'";
+                $resPrecio = $conexion -> query($sql) -> fetch_assoc();
+                $precioUnitario = $resPrecio["precio"];
+                $sql = "INSERT INTO lineasPedidos (idPedido, lineaPedido, idProducto, cantidad, precioUnitario) 
+                        VALUES ('$idPedido', '$lineaPedido', '$idProducto', '$cantidad', '$precioUnitario')";
+                $conexion -> query($sql);
+                $lineaPedido++;
+            }
+
+            // Eliminar cesta
+
+            $sql = "DELETE FROM productosCestas WHERE idCesta = '$idCesta'";
+            $conexion -> query($sql);
+
+            $sql = "UPDATE cestas SET precioTotal = '0' WHERE idCesta = '$idCesta'";
+            $conexion -> query($sql);
         }
-    }
-        
+    }    
 
     if (isset($usuario)) { ?>
         <h1 class="mt-3">Cesta de <?php echo $usuario ?></h1> <?php
