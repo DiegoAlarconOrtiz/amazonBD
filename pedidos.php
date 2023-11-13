@@ -1,14 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-100" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos</title>
     <?php require "./basedatos.php"; ?>
+    <link rel="stylesheet" href="./estilos/navBar.css">
+    <link rel="shortcut icon" href="./imagenes/logoFondoBlanco.jpg"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
-<body>
-    <div class="container mt-3">
+<body class="h-100 w-100">
+    <nav class="navBar">
+        <div class="navTitulo">
+            <img id="logo" src="./imagenes/logo.png">
+            <h2 class="display-6">Winged</h2>
+        </div>
+        <div class="navEnlaces">
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./principal.php">Principal</a>
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./login.php">Inicia Sesión</a>
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./formUsuarios.php">Regístrate</a>
+        </div>
+        <div class="navOpciones">
+            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./cesta.php">Ver Cesta</a>
+            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./pedidos.php">Ver Pedidos</a>
+            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./formUsuarios.php">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container w-100 h-100 d-flex align-items-center justify-content-center flex-column">
         <?php
         session_start();
         error_reporting(0);
@@ -59,7 +83,7 @@
         }
         ?>
     <div class="mb-3">
-        <a class="fs-4" href="./principal.php">Voler a la página principal</a>
+        <a class="fs-4" href="./principal.php">Volver a la página principal</a>
     </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

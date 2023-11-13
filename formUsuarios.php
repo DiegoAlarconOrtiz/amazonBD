@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-100" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de usuario</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="shortcut icon" href="./imagenes/logoFondoBlanco.jpg"/>
+    <link rel="stylesheet" href="./estilos/navBar.css">
     <?php require '../funciones.php' ?>
     <?php require './basedatos.php' ?>
 </head>
-<body>
+<body class="h-100 w-100">
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $temp_usuario = depurar($_POST["usuario"]);
@@ -56,10 +58,33 @@
         }
     }
     ?>
-    <div class="container mt-3">
-        <h1>Registrarse</h1>
+    <nav class="navBar">
+        <div class="navTitulo">
+            <img id="logo" src="./imagenes/logo.png">
+            <h2 class="display-6">Winged</h2>
+        </div>
+        <div class="navEnlaces">
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./principal.php">Principal</a>
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./login.php">Inicia Sesión</a>
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./formUsuarios.php">Regístrate</a>
+        </div>
+        <div class="navOpciones">
+            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./cesta.php">Ver Cesta</a>
+            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./pedidos.php">Ver Pedidos</a>
+            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./formUsuarios.php">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="w-100 h-100 d-flex align-items-center justify-content-center flex-column">
+        <h1 class="text-center mb-4">Bienvenido a Winged!</h1>
+        <h1 class="display-6 mb-4">Registrarse</h1>
         <form action="" method="post">
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Usuario: </label>
                 <input class="form-control" type="text" name="usuario">
                 <?php if(isset($err_usuario)) { ?>
@@ -69,7 +94,7 @@
                 <?php
                 } ?>
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Contraseña: </label>
                 <input class="form-control" type="password" name="contrasena">
                 <?php if(isset($err_contrasena)) { ?>
@@ -79,7 +104,7 @@
                 <?php
                 } ?>
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label>Fecha nacimiento: </label>
                 <input class="form-control" type="date" name="fechaNacimiento">
                 <?php if(isset($err_fechaNacimiento)) { ?>
@@ -89,7 +114,7 @@
                 <?php
                 } ?>
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <a href="./login.php">¿Ya tienes una cuenta? Inicia sesión aquí</a>
             </div>
             <input class="btn btn-primary" type="submit" value="Enviar">
