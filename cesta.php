@@ -10,33 +10,15 @@
     <?php require "./basedatos.php"; ?>
 </head>
 <body class="h-100 w-100">
-    <nav class="navBar">
-        <div class="navTitulo">
-            <img id="logo" src="./imagenes/logo.png">
-            <h2 class="display-6">Winged</h2>
-        </div>
-        <div class="navEnlaces">
-            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./principal.php">Principal</a>
-            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./login.php">Inicia Sesión</a>
-            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./formUsuarios.php">Regístrate</a>
-        </div>
-        <div class="navOpciones">
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./cesta.php">Ver Cesta</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./pedidos.php">Ver Pedidos</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./formUsuarios.php">Cerrar Sesión</a>
-        </div>
-    </nav>
-    <?php
+<?php
     session_start();
     error_reporting(0);
     $usuario = $_SESSION["usuario"];
     error_reporting(-1);
+
+    if (!isset($usuario)) {
+        header("Location: ./login.php");
+    }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["eliminar"])) {
@@ -117,9 +99,83 @@
 
             $sql = "UPDATE cestas SET precioTotal = '0' WHERE idCesta = '$idCesta'";
             $conexion -> query($sql);
+        } else if (isset($_POST["eliminarTodo"])) {
+            $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+            $resultadoProductos = $conexion -> query($sql);
+            $res = $resultadoProductos -> fetch_assoc();
+
+            $idCesta = $res["idCesta"];
+
+            $sql = "DELETE FROM productosCestas WHERE idCesta = '$idCesta'";
+            $conexion -> query($sql);
+
+            $sql = "UPDATE cestas SET precioTotal = '0' WHERE idCesta = '$idCesta'";
+            $conexion -> query($sql);
+        } else if (isset($_POST["cerrarSesion"])) {
+            session_destroy();
+            header("Location: ./login.php");
+        } else if (isset($_POST["verCesta"])) {
+            header("Location: ./cesta.php");
+        } else if (isset($_POST["verPedidos"])) {
+            header("Location: ./pedidos.php");
         }
     }    
     ?>
+    <nav class="navBar">
+        <div class="navTitulo">
+            <img id="logo" src="./imagenes/logo.png">
+            <h2 class="display-6">Winged</h2>
+        </div>
+        <div class="navEnlaces">
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./principal.php">Principal</a>
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./login.php">Inicia Sesión</a>
+            <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./formUsuarios.php">Regístrate</a>
+        </div>
+        <div class="navOpciones">
+            <form method="post" class="position-relative">
+                    <input type="hidden" name="verCesta">
+                    <button type="submit" class="btn btn-primary position-relative"
+                            style="max-width:60px; max-height:60px; margin: 0.3rem;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png" >
+                    </button>
+                    <div class="cantidadCestaNav">
+                        <?php
+                        $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+                        $res = $conexion -> query($sql);
+                        $resCesta = $res->fetch_assoc();
+                        $idCesta = $resCesta["idCesta"];
+        
+                        $sql = "SELECT cantidad FROM productosCestas WHERE idCesta = '$idCesta'";
+                        $res = $conexion -> query($sql);
+
+                        $totalCantidadCesta = 0;
+
+                        while ($elem = $res -> fetch_assoc()) {
+                            $totalCantidadCesta += $elem["cantidad"];
+                        }
+
+                        echo $totalCantidadCesta;
+                        ?>
+                    </div>
+            </form>
+            <form method="post">
+                    <input type="hidden" name="verPedidos">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
+                    </button>            </form>
+            <form method="post">
+                    <input type="hidden" name="cerrarSesion">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cerrarSesion.png">
+                    </button>
+            </form>
+        </div>
+    </nav>
 
     <div class="container w-100 h-100 d-flex align-items-center justify-content-center flex-column">
         <?php
@@ -189,20 +245,34 @@
         ?>
         <div class="mb-3">
             <?php
-            $sql = "SELECT precioTotal FROM cestas WHERE usuario = '$usuario'";
-            $res = $conexion -> query($sql);
-            $precioTotal = $res -> fetch_assoc();
+            if (isset($usuario)) {
+                $sql = "SELECT precioTotal FROM cestas WHERE usuario = '$usuario'";
+                $res = $conexion -> query($sql);
+                $precioTotal = $res -> fetch_assoc();
 
-            $precioTotal = $precioTotal["precioTotal"];
+                $precioTotal = $precioTotal["precioTotal"];
+                ?>
+                <h3 class="display-6">Precio total: <?php echo $precioTotal ?>€</h3>
+                <?php
+            }
             ?>
-            <h3 class="display-6">Precio total: <?php echo $precioTotal ?>€</h3>
-        </div>
-        <div class="mb-3">
-            <form method="post">
-                <input type="hidden" name="comprar">
-                <input type="submit" class="btn btn-primary" value="Finalizar compra">      
-            </form>
-        </div>
+        </div> <?php
+        if (isset($usuario)) {
+            ?>
+            <div class="mb-3">
+                <form method="post">
+                    <input type="hidden" name="eliminarTodo">
+                    <input type="submit" class="btn btn-primary" value="Vaciar Cesta">      
+                </form>
+            </div>
+            <div class="mb-3">
+                <form method="post">
+                    <input type="hidden" name="comprar">
+                    <input type="submit" class="btn btn-primary" value="Finalizar compra">      
+                </form>
+            </div>
+            <?php
+        } ?>
         <div class="mb-3">
             <a class="fs-4" href="./principal.php">Volver a la página principal</a>
         </div>

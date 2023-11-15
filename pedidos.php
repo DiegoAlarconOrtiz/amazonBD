@@ -10,6 +10,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body class="h-100 w-100">
+    <?php
+    session_start();
+    error_reporting(0);
+    $usuario = $_SESSION["usuario"];
+    error_reporting(-1);
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST["cerrarSesion"])) {
+            session_destroy();
+            header("Location: ./login.php");
+        } else if (isset($_POST["verCesta"])) {
+            header("Location: ./cesta.php");
+        } else if (isset($_POST["verPedidos"])) {
+            header("Location: ./pedidos.php");
+        }
+    }
+    ?>
     <nav class="navBar">
         <div class="navTitulo">
             <img id="logo" src="./imagenes/logo.png">
@@ -24,20 +41,49 @@
                 href="./formUsuarios.php">Regístrate</a>
         </div>
         <div class="navOpciones">
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./cesta.php">Ver Cesta</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./pedidos.php">Ver Pedidos</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./formUsuarios.php">Cerrar Sesión</a>
+            <form method="post" class="position-relative">
+                    <input type="hidden" name="verCesta">
+                    <button type="submit" class="btn btn-primary position-relative"
+                            style="max-width:60px; max-height:60px; margin: 0.3rem;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png" >
+                    </button>
+                    <div class="cantidadCestaNav">
+                        <?php
+                        $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+                        $res = $conexion -> query($sql);
+                        $resCesta = $res->fetch_assoc();
+                        $idCesta = $resCesta["idCesta"];
+        
+                        $sql = "SELECT cantidad FROM productosCestas WHERE idCesta = '$idCesta'";
+                        $res = $conexion -> query($sql);
+
+                        $totalCantidadCesta = 0;
+
+                        while ($elem = $res -> fetch_assoc()) {
+                            $totalCantidadCesta += $elem["cantidad"];
+                        }
+
+                        echo $totalCantidadCesta;
+                        ?>
+                    </div>
+            </form>
+            <form method="post">
+                    <input type="hidden" name="verPedidos">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
+                    </button>            </form>
+            <form method="post">
+                    <input type="hidden" name="cerrarSesion">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cerrarSesion.png">
+                    </button>
+            </form>
         </div>
     </nav>
     <div class="container w-100 h-100 d-flex align-items-center justify-content-center flex-column">
         <?php
-        session_start();
-        error_reporting(0);
-        $usuario = $_SESSION["usuario"];
-        error_reporting(-1);
 
         if (isset($usuario)) { ?>
             <h1>Pedidos</h1> <?php

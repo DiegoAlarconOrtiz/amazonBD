@@ -24,6 +24,16 @@
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        if (isset($_POST["cerrarSesion"])) {
+            session_destroy();
+            header("Location: ./login.php");
+        } else if (isset($_POST["verCesta"])) {
+            header("Location: ./cesta.php");
+        } else if (isset($_POST["verPedidos"])) {
+            header("Location: ./pedidos.php");
+        }
+        
         $temp_nombre = depurar($_POST["nombre"]);
         $temp_precio = depurar($_POST["precio"]);
         $temp_descripcion = depurar($_POST["descripcion"]);
@@ -115,12 +125,45 @@
                 href="./formUsuarios.php">Regístrate</a>
         </div>
         <div class="navOpciones">
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./cesta.php">Ver Cesta</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./pedidos.php">Ver Pedidos</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./formUsuarios.php">Cerrar Sesión</a>
+            <form method="post" class="position-relative">
+                    <input type="hidden" name="verCesta">
+                    <button type="submit" class="btn btn-primary position-relative"
+                            style="max-width:60px; max-height:60px; margin: 0.3rem;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png" >
+                    </button>
+                    <div class="cantidadCestaNav">
+                        <?php
+                        $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+                        $res = $conexion -> query($sql);
+                        $resCesta = $res->fetch_assoc();
+                        $idCesta = $resCesta["idCesta"];
+        
+                        $sql = "SELECT cantidad FROM productosCestas WHERE idCesta = '$idCesta'";
+                        $res = $conexion -> query($sql);
+
+                        $totalCantidadCesta = 0;
+
+                        while ($elem = $res -> fetch_assoc()) {
+                            $totalCantidadCesta += $elem["cantidad"];
+                        }
+
+                        echo $totalCantidadCesta;
+                        ?>
+                    </div>
+            </form>
+            <form method="post">
+                    <input type="hidden" name="verPedidos">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
+                    </button>            </form>
+            <form method="post">
+                    <input type="hidden" name="cerrarSesion">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cerrarSesion.png">
+                    </button>
+            </form>
         </div>
     </nav>
     <h1 class="mt-3 mb-3">Nuevo producto</h1>

@@ -13,6 +13,16 @@
 <body class="h-100 w-100">
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        if (isset($_POST["cerrarSesion"])) {
+            session_destroy();
+            header("Location: ./login.php");
+        } else if (isset($_POST["verCesta"])) {
+            header("Location: ./cesta.php");
+        } else if (isset($_POST["verPedidos"])) {
+            header("Location: ./pedidos.php");
+        }
+        
         $usuario = depurar($_POST["usuario"]);
         $contrasena = depurar($_POST["contrasena"]);
 
@@ -62,12 +72,26 @@
                 href="./formUsuarios.php">Regístrate</a>
         </div>
         <div class="navOpciones">
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./cesta.php">Ver Cesta</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./pedidos.php">Ver Pedidos</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./formUsuarios.php">Cerrar Sesión</a>
+            <form method="post">
+                    <input type="hidden" name="verCesta">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png">
+                    </button>
+            </form>
+            <form method="post">
+                    <input type="hidden" name="verPedidos">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
+                    </button>            </form>
+            <form method="post">
+                    <input type="hidden" name="cerrarSesion">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cerrarSesion.png">
+                    </button>
+            </form>
         </div>
     </nav>
     <div class="w-100 h-100 d-flex align-items-center justify-content-center flex-column">

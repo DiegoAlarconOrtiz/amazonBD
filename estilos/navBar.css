@@ -37,7 +37,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     margin-right: 1rem;
     width: 20%;
     color: #FFFFFF;
@@ -45,6 +44,20 @@
 
 .navBar div #logo {
     height: 100%;
-    margin: 0 1rem 0 1rem;
+    margin: 0 2rem 0 2rem;
     filter: invert(1);
+}
+
+.cantidadCestaNav {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+    background-color: #0D6EFD;
+    border: 2px solid #FFFFFF;
+    width: 1.5em;
+    height: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

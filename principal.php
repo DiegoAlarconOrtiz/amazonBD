@@ -11,6 +11,74 @@
     <?php require "./producto.php" ?>
 </head>
 <body class="h-100 w-100">
+    <?php
+    session_start();
+    error_reporting(0);
+    $usuario = $_SESSION["usuario"];
+    error_reporting(-1);
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST["cerrarSesion"])) {
+            session_destroy();
+            header("Location: ./login.php");
+        } else if (isset($_POST["login"])) {
+            header("Location: ./login.php");
+        } else if (isset($_POST["verCesta"])) {
+            header("Location: ./cesta.php");
+        } else if (isset($_POST["verPedidos"])) {
+            header("Location: ./pedidos.php");
+        } else if (isset($_POST["anadir"])) {
+            $idProducto = $_POST["anadir"];
+
+            $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+            $res = $conexion -> query($sql);
+            $resCesta = $res->fetch_assoc();
+            $idCesta = $resCesta["idCesta"];
+
+            $sql = "SELECT cantidad FROM productosCestas WHERE idCesta = '$idCesta' AND idProducto = '$idProducto'";
+            $res = $conexion -> query($sql) -> fetch_assoc();
+
+            // AQUI VA EL CONTROL DE CANTIDAD DEL SELECT
+            $cantidadesDisponibles = ['1', '2', '3', '4', '5'];
+
+            if (in_array($_POST["cantidadAniadida"], $cantidadesDisponibles)) {
+                $cantidadAniadida = $_POST["cantidadAniadida"];
+            } else {
+                $cantidadAniadida = 1;
+            }
+
+            error_reporting(0);
+            if ($res["cantidad"]) {
+                $cantidad = $res['cantidad'] + $cantidadAniadida;
+                $sql = "UPDATE productosCestas SET cantidad = $cantidad WHERE idCesta = '$idCesta' AND idProducto = '$idProducto'";
+                $conexion -> query($sql);
+            } else {
+                $sql = "INSERT INTO productosCestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', '$idCesta', 1)";
+                $conexion -> query($sql);
+                if ($cantidadAniadida > 1) {
+                    $cantidad = $cantidadAniadida;
+                    $sql = "UPDATE productosCestas SET cantidad = $cantidad WHERE idCesta = '$idCesta' AND idProducto = '$idProducto'";
+                    $conexion -> query($sql);
+                }
+            }
+            error_reporting(-1);
+
+            $sql = "SELECT precio FROM productos WHERE idProducto = '$idProducto'";
+            $precioAniadido = $conexion -> query($sql) -> fetch_assoc();
+            $precioAniadido = $precioAniadido["precio"];
+            $precioAniadido *= $cantidadAniadida;
+
+            $sql = "SELECT precioTotal FROM cestas WHERE idCesta = '$idCesta'";
+            $precioTotal = $conexion -> query($sql) -> fetch_assoc();
+
+            $precioFinal = $precioTotal["precioTotal"] + $precioAniadido;
+
+            $sql = "UPDATE cestas SET precioTotal = $precioFinal WHERE idCesta = '$idCesta'";
+            $conexion -> query($sql);
+        }
+    }
+    ?>
+
     <nav class="navBar">
         <div class="navTitulo">
             <img id="logo" src="./imagenes/logo.png">
@@ -25,91 +93,60 @@
                 href="./formUsuarios.php">Regístrate</a>
         </div>
         <div class="navOpciones">
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./cesta.php">Ver Cesta</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./pedidos.php">Ver Pedidos</a>
-            <a class="fs-6 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
-                href="./formUsuarios.php">Cerrar Sesión</a>
+            <form method="post" class="position-relative">
+                    <input type="hidden" name="verCesta">
+                    <button type="submit" class="btn btn-primary position-relative"
+                            style="max-width:60px; max-height:60px; margin: 0.3rem;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png" >
+                    </button>
+                    <?php
+                    if (isset($usuario)) { ?>
+                        <div class="cantidadCestaNav">
+                        <?php
+                        $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+                        $res = $conexion -> query($sql);
+                        $resCesta = $res->fetch_assoc();
+                        $idCesta = $resCesta["idCesta"];
+        
+                        $sql = "SELECT cantidad FROM productosCestas WHERE idCesta = '$idCesta'";
+                        $res = $conexion -> query($sql);
+
+                        $totalCantidadCesta = 0;
+
+                        while ($elem = $res -> fetch_assoc()) {
+                            $totalCantidadCesta += $elem["cantidad"];
+                        }
+
+                        echo $totalCantidadCesta;
+                        ?>
+                    </div> <?php
+                    }
+                    ?>
+                    
+            </form>
+            <form method="post">
+                    <input type="hidden" name="verPedidos">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
+                    </button>
+            </form>
+            <form method="post">
+                    <input type="hidden" name="cerrarSesion">
+                    <button type="submit" class="btn btn-primary"
+                            style="max-width:60px; max-height:60px;">
+                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cerrarSesion.png">
+                    </button>
+            </form>
         </div>
     </nav>
     <div class="container w-100 h-100 d-flex align-items-center justify-content-center flex-column">
+        
         <?php
-        session_start();
-        error_reporting(0);
-        $usuario = $_SESSION["usuario"];
-        error_reporting(-1);
-
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            if (isset($_POST["cerrarSesion"])) {
-                session_destroy();
-                header("Location: ./login.php");
-            } else if (isset($_POST["login"])) {
-                header("Location: ./login.php");
-            } else if (isset($_POST["verCesta"])) {
-                header("Location: ./cesta.php");
-            } else if (isset($_POST["verPedidos"])) {
-                header("Location: ./pedidos.php");
-            } else if (isset($_POST["anadir"])) {
-                $idProducto = $_POST["anadir"];
-
-                $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
-                $res = $conexion -> query($sql);
-                $resCesta = $res->fetch_assoc();
-                $idCesta = $resCesta["idCesta"];
-
-                $sql = "SELECT cantidad FROM productosCestas WHERE idCesta = '$idCesta' AND idProducto = '$idProducto'";
-                $res = $conexion -> query($sql) -> fetch_assoc();
-
-                error_reporting(0);
-                if ($res["cantidad"]) {
-                    $cantidad = $res['cantidad'] + 1;
-                    $sql = "UPDATE productosCestas SET cantidad = $cantidad WHERE idCesta = '$idCesta' AND idProducto = '$idProducto'";
-                    $conexion -> query($sql);
-                } else {
-                    $sql = "INSERT INTO productosCestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', '$idCesta', 1)";
-                    $conexion -> query($sql);
-                }
-                error_reporting(-1);
-
-                $sql = "SELECT precio FROM productos WHERE idProducto = '$idProducto'";
-                $precioAniadido = $conexion -> query($sql) -> fetch_assoc();
-
-                $sql = "SELECT precioTotal FROM cestas WHERE idCesta = '$idCesta'";
-                $precioTotal = $conexion -> query($sql) -> fetch_assoc();
-
-                $precioFinal = $precioTotal["precioTotal"] + $precioAniadido["precio"];
-
-                $sql = "UPDATE cestas SET precioTotal = $precioFinal WHERE idCesta = '$idCesta'";
-                $conexion -> query($sql);
-            }
-        }
         
         if (isset($usuario)) {?>
             <div class="mt-3">
                 <h2>Bienvenid@ a Winged <?php echo $_SESSION["usuario"]; ?>!</h2>
-                <form method="post">
-                    <a href="./cesta.php">
-                        <input type="hidden" name="verCesta">
-                        <input type="submit" class="btn btn-primary" value="Ver mi cesta">
-                    </a>
-                </form>
-            </div>
-            <div class="mt-3">
-                <form method="post">
-                    <a href="./pedidos.php">
-                        <input type="hidden" name="verPedidos">
-                        <input type="submit" class="btn btn-primary" value="Ver pedidos">
-                    </a>
-                </form>
-            </div>
-            <div class="mt-3">
-                <form method="post">
-                    <a href="./login.php">
-                        <input type="hidden" name="cerrarSesion">
-                        <input type="submit" class="btn btn-primary" value="Cerrar sesion">
-                    </a>
-                </form>
             </div>
         <?php
         } else {?>
@@ -152,13 +189,20 @@
                             <td class="fs-4 align-middle"><?php echo $producto -> nombreProducto?></td>
                             <td class="display-6 align-middle"><?php echo $producto -> precio?>€</td>
                             <td class="align-middle">
-                                <form method="post">
+                                <form method="post" class="d-flex">
                                     <?php
                                     if (!isset($usuario)) { ?>
                                         <input type="hidden" name="login"><?php
                                     } else { ?>
                                         <input type="hidden" name="anadir" value="<?php echo $producto -> idProducto?>"><?php
                                     } ?>
+                                    <select name="cantidadAniadida" class="form-select mx-3">
+                                        <option value="1" selected>1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
                                     <button type="submit" class="btn btn-primary"
                                             style="max-width:60px; max-height:60px;">
                                         <img style="filter: invert(100%); max-width:40px; max-height:40px;" src="./imagenes/cesta.png" alt="">
