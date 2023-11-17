@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html class="h-100" lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuario</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="shortcut icon" href="./imagenes/logoFondoBlanco.jpg"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="shortcut icon" href="./imagenes/logoFondoBlanco.jpg" />
     <link rel="stylesheet" href="./estilos/navBar.css">
     <?php require '../funciones.php' ?>
     <?php require './basedatos.php' ?>
 </head>
-<body class="container">
+
+<body class="h-100 w-100">
 
     <?php
     session_start();
@@ -99,11 +102,17 @@
         }
 
         #   Validación de imagen
+        $formatos = ["image/jpg", "image/png", "image/jpeg"];
+        define('MB', 1048576);
         if (strlen($temp_imagen["name"]) == 0) {
             $err_imagen = "La imagen de producto es obligatoria";
         } else {
             if (!getimagesize($temp_imagen["tmp_name"])) {
-                $err_imagen = "Debes subir una imagen";
+                $err_imagen = "Debes subir una imagen, y debe ser .jpg, .png. o .png";
+            } else if (!in_array($temp_imagen["type"], $formatos)) {
+                $err_imagen = "El formato debe ser .jpg, .png. o .png";
+            } else if ($temp_imagen["size"] > 5*MB) {
+                $err_imagen = "El tamanio no debe superar 1MB";
             } else {
                 $imagen = $temp_imagen["name"];
             }
@@ -114,25 +123,44 @@
     <nav class="navBar">
         <div class="navTitulo">
             <img id="logo" src="./imagenes/logo.png">
-            <h2 class="display-6">Winged</h2>
+            <h2 id="tituloPrincipal"  class="display-6">Winged</h2>
         </div>
         <div class="navEnlaces">
+            <div id="menuDesplegable" class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="logoMenu" src="./imagenes/logo.png" alt="">
+                </button>
+                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownMenuButton2">
+                  <li><a class="dropdown-item" href="./principal.php">Principal</a></li>
+                  <li><a class="dropdown-item" href="./login.php">Inicia Sesión</a></li>
+                  <li><a class="dropdown-item" href="./formUsuarios.php">Regístrate</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item active" href="./formProductos.php">Stock</a></li>
+                </ul>
+            </div>
             <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
                 href="./principal.php">Principal</a>
             <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
                 href="./login.php">Inicia Sesión</a>
             <a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
                 href="./formUsuarios.php">Regístrate</a>
+            <?php
+            $rol = $_SESSION["rol"];
+            if ($rol == "admin") {
+                ?><a class="fs-4 m-3 link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-25-hover"
+                href="./formProductos.php">Stockaje</a><?php
+            }
+            ?>
         </div>
         <div class="navOpciones">
             <form method="post" class="position-relative">
-                    <input type="hidden" name="verCesta">
-                    <button type="submit" class="btn btn-primary position-relative"
-                            style="max-width:60px; max-height:60px; margin: 0.3rem;">
-                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png" >
-                    </button>
-                    <div class="cantidadCestaNav">
-                        <?php
+                <input type="hidden" name="verCesta">
+                <button type="submit" class="btn btn-primary position-relative"
+                    style="max-width:60px; max-height:60px; margin: 0.3rem;">
+                    <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png">
+                </button>
+                <div class="cantidadCestaNav">
+                    <?php
                         $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
                         $res = $conexion -> query($sql);
                         $resCesta = $res->fetch_assoc();
@@ -149,78 +177,79 @@
 
                         echo $totalCantidadCesta;
                         ?>
-                    </div>
+                </div>
             </form>
             <form method="post">
-                    <input type="hidden" name="verPedidos">
-                    <button type="submit" class="btn btn-primary"
-                            style="max-width:60px; max-height:60px;">
-                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
-                    </button>            </form>
+                <input type="hidden" name="verPedidos">
+                <button type="submit" class="btn btn-primary" style="max-width:60px; max-height:60px;">
+                    <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
+                </button>
+            </form>
             <form method="post">
-                    <input type="hidden" name="cerrarSesion">
-                    <button type="submit" class="btn btn-primary"
-                            style="max-width:60px; max-height:60px;">
-                        <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cerrarSesion.png">
-                    </button>
+                <input type="hidden" name="cerrarSesion">
+                <button type="submit" class="btn btn-primary" style="max-width:60px; max-height:60px;">
+                    <img style="filter: invert(100%); max-width:30px; max-height:30px;"
+                        src="./imagenes/cerrarSesion.png">
+                </button>
             </form>
         </div>
     </nav>
-    <h1 class="mt-3 mb-3">Nuevo producto</h1>
-    <form method="post" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label class="form-label">NOMBRE: </label>
-            <input class="form-control" type="text" name="nombre">
-            <?php if(isset($err_nombre)) { ?>
+    <div class="w-100 h-100 d-flex align-items-center justify-content-center flex-column">
+        <h1 class="mt-3 mb-3">Nuevo producto</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">NOMBRE: </label>
+                <input class="form-control" type="text" name="nombre">
+                <?php if(isset($err_nombre)) { ?>
                 <div class="text-danger">
                     <?php echo $err_nombre ?>
                 </div>
-            <?php
+                <?php
             } ?>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">PRECIO (Entre 0 y 99999.99): </label>
-            <input class="form-control" type="text" name="precio">
-            <?php if(isset($err_precio)) { ?>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">PRECIO (Entre 0 y 99999.99): </label>
+                <input class="form-control" type="text" name="precio">
+                <?php if(isset($err_precio)) { ?>
                 <div class="text-danger">
                     <?php echo $err_precio ?>
                 </div>
-            <?php
+                <?php
             } ?>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">DESCRIPCION: </label>
-            <input class="form-control" type="text" name="descripcion">
-            <?php if(isset($err_descripcion)) { ?>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">DESCRIPCION: </label>
+                <input class="form-control" type="text" name="descripcion">
+                <?php if(isset($err_descripcion)) { ?>
                 <div class="text-danger">
                     <?php echo $err_descripcion ?>
                 </div>
-            <?php
+                <?php
             } ?>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">CANTIDAD: </label>
-            <input class="form-control" type="number" name="cantidad">
-            <?php if(isset($err_cantidad)) { ?>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">CANTIDAD: </label>
+                <input class="form-control" type="number" name="cantidad">
+                <?php if(isset($err_cantidad)) { ?>
                 <div class="text-danger">
                     <?php echo $err_cantidad ?>
                 </div>
-            <?php
+                <?php
             } ?>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">IMAGEN: </label>
-            <input class="form-control" type="file" name="imagen">
-            <?php if(isset($err_imagen)) { ?>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">IMAGEN: </label>
+                <input class="form-control" type="file" name="imagen">
+                <?php if(isset($err_imagen)) { ?>
                 <div class="text-danger">
                     <?php echo $err_imagen ?>
                 </div>
-            <?php
+                <?php
             } ?>
-        </div>
-        <input class="btn btn-primary" type="submit" value="Enviar">
-    </form>
-    <?php
+            </div>
+            <input class="btn btn-primary" type="submit" value="Enviar">
+        </form>
+        <?php
     if(isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad) && isset($imagen)) {
         echo "<h3>Producto registrado con exito!</h3>";
 
@@ -229,6 +258,11 @@
         $conexion->query($sql);
     }
     ?>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+    </script>
 </body>
+
 </html>

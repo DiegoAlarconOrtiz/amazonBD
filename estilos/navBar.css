@@ -61,3 +61,94 @@
     justify-content: center;
     align-items: center;
 }
+
+#contenedorTabla button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#menuDesplegable {
+    display: none;
+}
+
+#loginMsj {
+    position: absolute;
+    margin-top: 7%;
+    z-index: 999;
+}
+
+@media only screen and (max-width: 1200px) {
+    #tituloPrincipal {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    #menuDesplegable {
+        display: flex;
+    }
+
+    .navEnlaces > a {
+        display: none;
+    }
+
+    .navTitulo {
+        display: none;
+    }
+
+    .logoMenu {
+        height: 75px;
+        width: 75px;
+        filter: invert(1);
+    }
+
+    #menuDesplegable button {
+        height: 60%;
+    }
+
+    .navBar {
+        justify-content: space-around;
+    }
+
+    .navEnlaces {
+        margin: 0;
+        padding: 0;
+        width: auto;
+    }
+
+    #contenedorTabla {
+        width: 100%;
+    }
+
+    #contenedorTabla img{
+        height: 60px;
+    }
+
+    #contenedorTabla button {
+        height: 45px;
+        width: 45px;
+    }
+
+    #contenedorTabla button img {
+        height: 28px;
+        width: 28px; 
+    }
+
+    #contenedorTabla td{
+        font-size: 15px;
+    }
+
+    #nombreProducto {
+        font-size: 15px !important;
+    }
+
+    #contenedorTabla select{
+        width: 10px;
+    }
+
+    #imgUltimasUnidades {
+        width: 40px !important;
+        height: 35px !important;
+    }
+}
