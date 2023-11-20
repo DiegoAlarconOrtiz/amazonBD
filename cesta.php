@@ -228,7 +228,7 @@
         </div>
         <div class="navEnlaces">
             <div id="menuDesplegable" class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="logoMenu" src="./imagenes/logo.png" alt="">
                 </button>
                 <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownMenuButton2">
@@ -256,9 +256,9 @@
         <div class="navOpciones">
             <form method="post" class="position-relative">
                 <input type="hidden" name="verCesta">
-                <button type="submit" class="btn btn-primary position-relative"
-                    style="max-width:60px; max-height:60px; margin: 0.3rem;">
-                    <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png">
+                <button type="submit" class="btn position-relative"
+                    style="max-width:60px; max-height:60px;">
+                    <img style="filter: invert(100%); max-width:30px; max-height:30px; margin: 0.3rem;" src="./imagenes/cesta.png">
                 </button>
                 <div class="cantidadCestaNav">
                     <?php
@@ -282,13 +282,13 @@
             </form>
             <form method="post">
                 <input type="hidden" name="verPedidos">
-                <button type="submit" class="btn btn-primary" style="max-width:60px; max-height:60px;">
+                <button type="submit" class="btn" style="max-width:60px; max-height:60px;">
                     <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
                 </button>
             </form>
             <form method="post">
                 <input type="hidden" name="cerrarSesion">
-                <button type="submit" class="btn btn-primary" style="max-width:60px; max-height:60px;">
+                <button type="submit" class="btn" style="max-width:60px; max-height:60px;">
                     <img style="filter: invert(100%); max-width:30px; max-height:30px;"
                         src="./imagenes/cerrarSesion.png">
                 </button>
@@ -355,7 +355,7 @@
                                     ?>
                                 </select>
                                 <input type="hidden" name="eliminar" value="<?php echo $idProducto?>">
-                                <button type="submit" class="btn btn-danger" style="max-width:60px; max-height:60px;">
+                                <button type="submit" class="btn" style="max-width:60px; max-height:60px;">
                                     <img style="filter: invert(100%); max-width:30px; max-height:30px;"
                                         src="./imagenes/eliminar.png">
                                 </button>
@@ -395,13 +395,13 @@
         <div class="mb-3">
             <form method="post">
                 <input type="hidden" name="eliminarTodo">
-                <input type="submit" class="btn btn-danger" value="Vaciar Cesta">
+                <input type="submit" class="btn" value="Vaciar Cesta">
             </form>
         </div>
         <div class="mb-3">
             <form method="post">
                 <input type="hidden" name="comprar">
-                <input type="submit" class="btn btn-primary" value="Finalizar compra">
+                <input type="submit" class="btn" value="Finalizar compra">
             </form>
         </div>
         <?php

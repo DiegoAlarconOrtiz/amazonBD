@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    color: #2F4858;
 }
 
 .navBar {
@@ -9,8 +10,8 @@
     justify-content: space-between;
     width: 100%;
     height: 10%;
-    background-color: #0D6EFD;
-    color: #FFFFFF;
+    background-color: #2B985A;
+    color: #2F4858;
 }
 
 .navTitulo {
@@ -20,7 +21,7 @@
     height: 100%;
     flex-grow: inherit;
     width: 20%;
-    color: #FFFFFF;
+    color: #2F4858;
 }
 
 .navEnlaces {
@@ -30,7 +31,7 @@
     height: 100%;
     flex-grow: inherit;
     width: 60%;
-    color: #FFFFFF;
+    color: #2F4858;
 }
 
 .navOpciones {
@@ -39,7 +40,7 @@
     align-items: center;
     margin-right: 1rem;
     width: 20%;
-    color: #FFFFFF;
+    color: #2F4858;
 }
 
 .navBar div #logo {
@@ -53,7 +54,7 @@
     bottom: 0;
     right: 0;
     border-radius: 50%;
-    background-color: #0D6EFD;
+    background-color: #DEAF00;
     border: 2px solid #FFFFFF;
     width: 1.5em;
     height: 1.5em;
@@ -78,6 +79,37 @@
     z-index: 999;
 }
 
+.btn:hover {
+    background-color: #008073;
+    color: #FFFFFF;
+}
+
+.btn {
+    background-color: #2B985A;
+    color: #FFFFFF;
+}
+
+table .btn {
+    background-color: #2B985A;
+}
+
+table .btn:hover {
+    background-color: #2B985A;
+    filter: sepia(1);
+}
+
+a {
+    color: #006472;
+}
+
+a:hover {
+    color: #2F4858;
+}
+
+#botonDetalles {
+    color: #FFFFFF;
+}
+
 @media only screen and (max-width: 1200px) {
     #tituloPrincipal {
         display: none;
@@ -87,6 +119,10 @@
 @media only screen and (max-width: 750px) {
     #menuDesplegable {
         display: flex;
+    }
+
+    .dropdown-item.active {
+        background-color: #2B985A;
     }
 
     .navEnlaces > a {

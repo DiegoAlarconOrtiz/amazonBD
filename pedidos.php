@@ -41,7 +41,7 @@
         </div>
         <div class="navEnlaces">
             <div id="menuDesplegable" class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="logoMenu" src="./imagenes/logo.png" alt="">
                 </button>
                 <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownMenuButton2">
@@ -69,9 +69,9 @@
         <div class="navOpciones">
             <form method="post" class="position-relative">
                 <input type="hidden" name="verCesta">
-                <button type="submit" class="btn btn-primary position-relative"
-                    style="max-width:60px; max-height:60px; margin: 0.3rem;">
-                    <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/cesta.png">
+                <button type="submit" class="btn position-relative"
+                    style="max-width:60px; max-height:60px;">
+                    <img style="filter: invert(100%); max-width:30px; max-height:30px; margin: 0.3rem;" src="./imagenes/cesta.png">
                 </button>
                 <div class="cantidadCestaNav">
                     <?php
@@ -95,13 +95,13 @@
             </form>
             <form method="post">
                 <input type="hidden" name="verPedidos">
-                <button type="submit" class="btn btn-primary" style="max-width:60px; max-height:60px;">
+                <button type="submit" class="btn" style="max-width:60px; max-height:60px;">
                     <img style="filter: invert(100%); max-width:30px; max-height:30px;" src="./imagenes/pedidos.png">
                 </button>
             </form>
             <form method="post">
                 <input type="hidden" name="cerrarSesion">
-                <button type="submit" class="btn btn-primary" style="max-width:60px; max-height:60px;">
+                <button type="submit" class="btn" style="max-width:60px; max-height:60px;">
                     <img style="filter: invert(100%); max-width:30px; max-height:30px;"
                         src="./imagenes/cerrarSesion.png">
                 </button>
@@ -131,7 +131,7 @@
                     while ($fila = $res -> fetch_assoc()) { ?>
                     <tr>
                         <td class="fs-4 align-middle"><?php echo $fila["idPedido"]?></td>
-                        <td class="fs-4 align-middle"><?php echo $fila["fecha"]?></td>
+                        <td class="fs-4 align-middle"><?php echo $fila["fechaPedido"]?></td>
                         <td class="display-6 align-middle"><?php echo $fila["precioTotal"]?>€</td>
                         <td class="align-middle">
                             <form method="post">
@@ -141,7 +141,7 @@
                                 } else { ?>
                                     <input type="hidden" name="detalles" value="<?php echo $fila["idPedido"]?>"><?php
                                 } ?>
-                                <button type="submit" class="btn btn-primary">Detalles</button>
+                                <button id="botonDetalles" type="submit" class="btn">Detalles</button>
                             </form>
                         </td>
                     </tr>
