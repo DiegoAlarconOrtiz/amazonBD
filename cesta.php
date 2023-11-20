@@ -89,11 +89,16 @@
                 
                 $stock = $resProductos["cantidad"];
 
+                $sql = "SELECT nombreProducto FROM productos WHERE idProducto = '$idProducto'";
+                $resNombre = $conexion -> query($sql) -> fetch_assoc();
+                
+                $nombre = $resNombre["nombreProducto"];
+
                 if ($cantidadEnCesta > $stock) {
                     echo "
                         <div id='loginMsj' class='toast bg-danger text-white text-center' role='alert' aria-live='assertive' aria-atomic='true'>
                         <div class='toast-body text-white'>
-                            No hay stock para el producto con ID: $idProducto, solo quedan $stock</div>
+                            No hay stock para el producto '$nombre', solo quedan $stock</div>
                         </div>
                         <script>
                             $('#loginMsj').fadeIn('#loginMsj');
@@ -128,7 +133,7 @@
                 $precioTotal = $conexion -> query($sql) -> fetch_assoc();
                 $precioTotal = $precioTotal["precioTotal"];
     
-                $sql = "INSERT INTO pedidos (fecha, precioTotal, usuario) VALUES ('$fecha', '$precioTotal', '$usuario')";
+                $sql = "INSERT INTO pedidos (fechaPedido, precioTotal, usuario) VALUES ('$fecha', '$precioTotal', '$usuario')";
                 $conexion -> query($sql);
     
                 $sql = "SELECT idPedido FROM pedidos WHERE usuario = '$usuario' ORDER BY idPedido DESC";
